@@ -1,11 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact } from 'store/contactsSlice';
-import { getContacts, getContactsFilter } from 'store/selector';
+import { deleteContact } from 'store/operation';
+import { selectVisibleContacts } from 'store/selector';
 
 const Contacts = () => {
   const dispatch = useDispatch();
-  const filter = useSelector(getContactsFilter);
-  const contacts = useSelector(getContacts);
+  const contacts = useSelector(selectVisibleContacts);
 
   const handleDelete = event => {
     const target = event.target;
@@ -14,40 +13,36 @@ const Contacts = () => {
     dispatch(deleteContact(id));
   };
 
-  const myContacts = contacts
-    .filter(contact =>
-      contact.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
-    )
-    .map(contact => (
-      <li
+  const myContacts = contacts.map(contact => (
+    <li
+      style={{
+        listStyle: 'none',
+        display: 'flex',
+        justifyContent: 'space-between',
+        margin: '3px',
+      }}
+      key={contact.id}
+    >
+      <p
         style={{
-          listStyle: 'none',
+          margin: '0',
           display: 'flex',
-          justifyContent: 'space-between',
-          margin: '3px',
+          flexDirection: 'column',
         }}
-        key={contact.id}
       >
-        <p
-          style={{
-            margin: '0',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          {contact.name} <span>{contact.number}</span>
-        </p>
-        <button
-          style={{ margin: '0 0 0 10px' }}
-          type="button"
-          name="delete"
-          data-id={contact.id}
-          onClick={handleDelete}
-        >
-          Delete
-        </button>
-      </li>
-    ));
+        {contact.name} <span>{contact.number}</span>
+      </p>
+      <button
+        style={{ margin: '0 0 0 10px' }}
+        type="button"
+        name="delete"
+        data-id={contact.id}
+        onClick={handleDelete}
+      >
+        Delete
+      </button>
+    </li>
+  ));
 
   return (
     <>
